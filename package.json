@@ -1,0 +1,29 @@
+{
+  "name": "playwrightdemo2",
+  "version": "1.0.0",
+  "description": "Playwright E2E Tests for Drive Revel",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:html": "playwright test",
+    "test:allure": "playwright test --config=allure.config.ts",
+    "test:ci": "playwright test --project=chromium",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "allure:generate": "allure generate allure-results -o allure-report --clean",
+    "allure:open": "allure open allure-report",
+    "allure:clear": "rm -rf allure-results allure-report history",
+    "report:html": "npx playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "allure-js-commons": "^3.7.1",
+    "allure-playwright": "^3.7.1"
+  }
+}

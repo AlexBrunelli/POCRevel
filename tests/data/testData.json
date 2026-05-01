@@ -1,0 +1,20 @@
+{
+  "addresses": [
+    "Calle Mayor 10, Madrid",
+    "Calle Gran Vía 25, Madrid",
+    "Avenida América 15, Madrid",
+    "Calle Tetuán 25, Sevilla",
+    "Calle Larios 30, Málaga"
+  ],
+  "idTypes": ["DNI", "NIE"],
+  "niePrefixes": ["X", "Y", "Z"],
+  "dateOfBirth": {
+    "minAge": 20,
+    "maxAge": 80
+  },
+  "user": {
+    "firstName": "Test",
+    "lastName": "User",
+    "emailDomain": "driverevel.com"
+  }
+}
