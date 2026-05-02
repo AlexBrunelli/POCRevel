@@ -90,8 +90,8 @@ export class CarSelectionPage extends BasePage {
     const features = await this.getFirstCarFeatures();
 
     console.log(`
-  🔹 Coche seleccionado: ${carName}
-     └ Combustible: ${features.fuel} | Cambio: ${features.transmission} | Tipo: ${features.type}
+  🔹 Selected car: ${carName}
+     └ Fuel: ${features.fuel} | Transmission: ${features.transmission} | Type: ${features.type}
   `);
 
     await this.getFirstCar().click();
@@ -126,11 +126,11 @@ export class CarSelectionPage extends BasePage {
   }
 
   async selectFilter(filterName: string, value: string): Promise<void> {
-    console.log(`🔹 Filtro aplicado: ${filterName} = ${value}`);
+    console.log(`🔹 Filter applied: ${filterName} = ${value}`);
     await this.page.locator('div').filter({ hasText: new RegExp(`^${filterName}$`) }).first().click();
     
-    if (filterName === 'Marca') {
-      const allBrandsLink = this.page.getByText('Ver todas las marcas');
+    if (filterName === 'Brand') {
+      const allBrandsLink = this.page.getByText('View all brands');
       if (await allBrandsLink.isVisible()) {
         await allBrandsLink.click();
       }
@@ -162,11 +162,11 @@ export class CarSelectionPage extends BasePage {
   }
 
   async selectMultipleFilters(filterName: string, values: string[]): Promise<void> {
-    console.log(`🔹 Filtros múltiples aplicados: ${filterName} = ${values.join(', ')}`);
+    console.log(`🔹 Multiple filters applied: ${filterName} = ${values.join(', ')}`);
     await this.page.locator('div').filter({ hasText: new RegExp(`^${filterName}$`) }).first().click();
     
-    if (filterName === 'Marca') {
-      const allBrandsLink = this.page.getByText('Ver todas las marcas');
+    if (filterName === 'Brand') {
+      const allBrandsLink = this.page.getByText('View all brands');
       if (await allBrandsLink.isVisible()) {
         await allBrandsLink.click();
         await this.page.waitForTimeout(500);
@@ -223,9 +223,9 @@ export class CarSelectionPage extends BasePage {
     };
   }
 
-  async filterByTransmission(transmission: 'Manual' | 'Automático'
+  async filterByTransmission(transmission: 'Manual' | 'Automatic'
   ): Promise<void> {
-    await this.selectFilter('Cambio', transmission);
+    await this.selectFilter('Transmission', transmission);
     await this.closeFilterModalWithoutSelect();
     await this.page.waitForTimeout(1500);
   }

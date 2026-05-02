@@ -1,6 +1,6 @@
 # Playwright E2E Tests
 
-**Proyecto de automatización de pruebas end-to-end para la aplicación web de Drive Revel.**
+**Proyecto de automatización de pruebas end-to-end para la aplicación web de Revel.**
 
 ## Tecnologías Utilizadas
 
@@ -19,9 +19,6 @@
 ```
 playwright.config/
 ├── tests/
-│   ├── old_borrame/              # Tests originales (versiones anteriores)
-│   │   ├── flujoA.spec.ts
-│   │   └── flujoB.spec.ts
 │   ├── allure/                   # Tests con annotations Allure (POC)
 │   │   ├── allure-flujoA.spec.ts
 │   │   └── allure-flujoB.spec.ts
@@ -177,31 +174,6 @@ npx allure open allure-report
 - `@tipo` - Tests de filtro por tipo de coche
 - `@combinado` - Tests de filtros combinados
 
-## Supuestos
-
-- La aplicación web está en ejecución (local o remota)
-- Se tiene acceso a la URL base configurada en `playwright.config.ts`
-- El navegador está disponible (Chrome/Chromium por defecto)
-- La API de generación de datos (Faker) está accesible
-- La red tiene acceso a los recursos externos (CDN, imágenes, etc.)
-
-## Próximos Pasos - Qué Automatizar
-
-### Prioridad Alta
-1. **Tests de validación de formularios** - Email inválido, teléfono incorrecto, DNI/NIE inválido
-2. **Tests de sesión** - Login, logout, sesión expirada
-3. **Tests de navegación** - Navegación entre páginas, botones atrás/adelante
-
-### Prioridad Media
-4. **Tests de rendimiento** - Timeouts, carga de páginas lentas
-5. **Tests de accesibilidad** - Navegación por teclado, aria-labels
-6. **Tests de internacionalización** - Cambio de idioma, formatos de fecha
-
-### Prioridad Baja
-7. **Tests de múltiples dispositivos** - Responsive design, diferentes viewports
-8. **Tests de carga** - Múltiples usuarios simultáneos (si aplica)
-9. **Tests visuales** - Visual regression testing con screenshot comparison
-
 ## Generación de Datos de Test
 
 Los datos se generan dinámicamente usando Faker en `utils/dataGenerator.ts`.
@@ -242,17 +214,29 @@ test.automation+[timestamp]@driverevel.com
 - Direcciones válidas predefinidas en `tests/data/testData.json`
 - Ejemplo: `Calle Mayor 10, Madrid`
 
-## Troubleshooting
+## 🚀 Estrategia de Automatización: Próximos Pasos
 
-### Tests fallan por timeout
-- Aumentar timeout en `playwright.config.ts`
-- Verificar conexión a internet
-- Verificar que la app esté corriendo
+A continuación se detallan las prioridades para las siguientes fases de automatización, enfocadas en asegurar la integridad del flujo de negocio y la consistencia de los datos.
 
-### Error de locator
-- Revisar selectores en `pages/`
-- Usar `npx playwright codegen` para generar selectores
+### 1. Flujos Críticos de Negocio (Prioridad Alta)
 
-### Videos/Screenshots no se generan
-- Verificar permisos de escritura en `test-results/`
-- Checking `screenshot` y `video` en config
+- **End-to-End de Reserva**: Automatizar el flujo completo desde la UI y API que integra el registro de usuario y la contratación, incluyendo validación financiera (mocks, dependiendo del entorno).
+- **Validación Financiera del Usuario**: Implementar comprobaciones automáticas de los datos enviados a terceros para verificar la validación financiera.
+- **Acceso Multicanal**: Validar el inicio de sesión para usuarios registrados tanto por teléfono como por correo electrónico.
+
+### 2. Integridad y Persistencia de Datos
+
+- **Sincronización con Base de Datos**: Verificar que, tras el registro, el usuario se crea correctamente en la base de datos.
+- **Validación de Persistencia API**: Confirmar que es posible realizar un GET del usuario recién creado a través de la API.
+- **Consistencia Multicanal (API vs UI)**: Validar que los flujos de usuario en diferentes canales (POS y Web) devuelvan respuestas consistentes, comparando las respuestas de la API con el comportamiento esperado de la UI.
+
+### 3. Optimización de Búsqueda y Filtrado
+
+- **Ampliación de Cobertura**: Completar los tests ya creados de filtrado, priorizando las opciones más críticas para el negocio.
+- **Consistencia de Resultados**: Validar que el número y los detalles de los vehículos devueltos tras aplicar cada filtro en la interfaz coincidan exactamente con los datos retornados por la API.
+- **Disponibilidad y Funcionalidad de Filtros**: Verificar que todos los filtros configurados estén disponibles para su selección y funcionen correctamente bajo diferentes condiciones de uso.
+
+### 4. Robustez y Expansión (Prioridad Media)
+
+- **Pruebas Negativas**: Automatizar la validación de campos para asegurar que el sistema no permite la introducción de datos inesperados o erróneos.
+- **Automatización Mobile**: Realizar la exportación de los casos de prueba para su ejecución en dispositivos móviles vía Appium.

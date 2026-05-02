@@ -71,7 +71,7 @@ export class CarDetails extends BasePage {
    * ========================= */
 
   async fillRegistrationForm(name: string, email: string, phone: string): Promise<void> {
-    console.log(`🔹 Formulario de registro completado para: ${name} (${email})`);
+    console.log(`🔹 Registration form completed for: ${name} (${email})`);
     await this.nameInput.fill(name);
     await this.emailInput.fill(email);
     await this.phoneInput.fill(phone);
@@ -85,7 +85,7 @@ export class CarDetails extends BasePage {
   }
 
   async submitEmptyForm(): Promise<void> {
-    console.log(`⚠️ Enviando formulario vacío - validando errores`);
+    console.log(`⚠️ Sending empty form - validating errors`);
     await this.continueButton.click();
   }
 

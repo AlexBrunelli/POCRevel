@@ -13,7 +13,7 @@ import {
     generateIdentification
 } from '../../utils/dataGenerator';
 
-test.describe('Flujo A - Allure', () => {
+test.describe('Flow A - Allure', () => {
 
     test.afterEach(async ({ page }, testInfo) => {
         const cardetails = new CarDetails(page);
@@ -23,28 +23,28 @@ test.describe('Flujo A - Allure', () => {
         const status = testInfo.status;
 
         if (status === 'passed') {
-            console.log(`\n✅ Test completado: "${testName}" - Todo OK`);
+            console.log(`\n✅ Test completed: "${testName}" - All OK`);
         } else if (status === 'failed') {
-            console.log(`\n❌ Test falló: "${testName}" - Revisar evidencia`);
+            console.log(`\n❌ Test failed: "${testName}" - Check evidence`);
         }
     });
 
-    test.describe('Positivo', () => {
+    test.describe('Positive', () => {
         test('Completar flujo de contratación', {
             annotation: [
                 {
-                    type: 'Descripción',
+                    type: 'Description',
                     description: 'Verifica que un usuario puede completar todo el flujo de contratación desde selección de coche hasta validación financiera'
                 },
                 {
-                    type: 'Criterio',
+                    type: 'Criteria',
                     description: 'El usuario debe poder seleccionar un coche, completar el registro, introducir datos personales y llegar a validación financiera'
                 }
             ],
             description: 'Usuario completa flujo completo de contratación',
             severity: 'critical',
-            feature: 'Flujo A',
-            story: 'Contratación'
+            feature: 'Flow A',
+            story: 'Contracting'
         }, async ({ page }) => {
             const carSelection = new CarSelectionPage(page);
             const cardetails = new CarDetails(page);
@@ -71,14 +71,14 @@ test.describe('Flujo A - Allure', () => {
         `);
 
             // GIVEN
-            await test.step('Dado que el usuario accede a la web de alquiler de coches', async () => {
+            await test.step('Given that the user accede a la web de alquiler de coches', async () => {
                 await page.goto('/coches');
                 await carSelection.acceptCookies();
                 await expect(carSelection.getPageBody()).not.toContainText('¿No encncuentras lo que buscas?');
             });
 
             // AND
-            await test.step('Y selecciona un coche disponible', async () => {
+            await test.step('And selects an coche disponible', async () => {
                 const carName = await carSelection.getFirstCarName();
                 await carSelection.selectFirstCar();
                 await cardetails.waitForCarDetailsPage();
@@ -88,25 +88,25 @@ test.describe('Flujo A - Allure', () => {
             });
 
             // WHEN
-            await test.step('Cuando completa el formulario de registro con datos válidos', async () => {
+            await test.step('When completa el formulario de registro con datos válidos', async () => {
                 await cardetails.fillRegistrationForm(firstName, email, phone);
             });
 
             // AND
-            await test.step('Y completa los datos personales', async () => {
+            await test.step('And completes los datos personales', async () => {
                 await personalData.fillPersonalData(firstName, lastName, dateOfBirth, address, identification);
                 await personalData.goToFinancialValidation();
             });
 
             // THEN
-            await test.step('Entonces el sistema avanza a validación financiera', async () => {
+            await test.step('Then el sistema avanza a validación financiera', async () => {
                 const isOnFinancialValidation = await financialValidation.isOnFinancialValidationPage();
                 expect(isOnFinancialValidation).toBe(true);
             });
         });
     });
 
-    test.describe('Negativo', () => {
+    test.describe('Negative', () => {
         test.beforeEach(async ({ page }) => {
             const carSelection = new CarSelectionPage(page);
             const cardetails = new CarDetails(page);
@@ -120,18 +120,18 @@ test.describe('Flujo A - Allure', () => {
         test('debe rechazar email incorrecto', {
             annotation: [
                 {
-                    type: 'Descripción',
+                    type: 'Description',
                     description: 'Verifica que el sistema rechaza emails sin dominio @driverevel.com'
                 },
                 {
-                    type: 'Criterio',
+                    type: 'Criteria',
                     description: 'El mensaje de error debe indicar formato de correo incorrecto'
                 }
             ],
             tag: '@negativo',
             description: 'Sistema rechaza email con dominio inválido',
             severity: 'normal',
-            feature: 'Flujo A',
+            feature: 'Flow A',
             story: 'Validación de formulario'
         }, async ({ page }) => {
             const cardetails = new CarDetails(page);
@@ -140,16 +140,16 @@ test.describe('Flujo A - Allure', () => {
             const validPhone = generateSpanishPhone();
 
             // GIVEN
-            await test.step('Dado que el usuario está en el formulario de registro', async () => {
+            await test.step('Given that the user está en el formulario de registro', async () => {
             });
 
             // WHEN
-            await test.step('Cuando intenta registrar un email sin dominio válido', async () => {
+            await test.step('When intenta registrar un email sin dominio válido', async () => {
                 await cardetails.fillRegistrationForm(validName, invalidEmail, validPhone);
             });
 
             // THEN
-            await test.step('Entonces el sistema muestra error de validación', async () => {
+            await test.step('Then el sistema muestra error de validación', async () => {
                 const errorEmail = cardetails.getEmailErrorLocator().first();
                 await expect(errorEmail).toBeVisible();
                 await expect(errorEmail).toHaveText('El correo no tiene el formato correcto');
@@ -159,33 +159,33 @@ test.describe('Flujo A - Allure', () => {
         test('debe mostrar errores al enviar formulario vacio', {
             annotation: [
                 {
-                    type: 'Descripción',
+                    type: 'Description',
                     description: 'Verifica que al enviar el formulario sin completar campos, se muestran todos los errores de validación'
                 },
                 {
-                    type: 'Criterio',
+                    type: 'Criteria',
                     description: 'Debe mostrar errores para: nombre, email, teléfono y términos'
                 }
             ],
             tag: '@negativo',
             description: 'Sistema muestra errores al enviar formulario vacío',
             severity: 'normal',
-            feature: 'Flujo A',
+            feature: 'Flow A',
             story: 'Validación de formulario'
         }, async ({ page }) => {
             const cardetails = new CarDetails(page);
 
             // GIVEN
-            await test.step('Dado que el usuario está en el formulario de registro', async () => {
+            await test.step('Given that the user está en el formulario de registro', async () => {
             });
 
             // WHEN
-            await test.step('Cuando envía el formulario sin completar campos', async () => {
+            await test.step('When envía el formulario sin completar campos', async () => {
                 await cardetails.submitEmptyForm();
             });
 
             // THEN
-            await test.step('Entonces el sistema muestra errores de validación', async () => {
+            await test.step('Then el sistema muestra errores de validación', async () => {
                 await expect(page.getByText('Este campo es obligatorio')).toBeVisible();
                 await expect(page.getByText('Introduce tu correo electrónico')).toBeVisible();
                 await expect(page.getByText('Introduce tu teléfono de contacto')).toBeVisible();
