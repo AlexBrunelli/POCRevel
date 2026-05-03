@@ -309,15 +309,6 @@ Ejemplo:
 
 ---
 
-### ⚠️ Consideraciones Clave
-
-- Playwright permite cubrir UI, mocks y validación de requests/responses  
-- Evitar depender de servicios externos en automatización  
-- Mantener los tests independientes y repetibles  
-- Tener cuidado con datos sensibles  
-
----
-
 ### 📌 Resumen
 
 | Entorno        | Enfoque             | Objetivo                  |
