@@ -113,6 +113,100 @@ npx playwright test --reporter=list
 npx playwright test --reporter=html
 ```
 
+### 💻 GitHub CLI
+
+Ejecuta los tests desde terminal usando GitHub CLI.
+
+#### Por archivo de test:
+
+```bash
+# Ejecutar flujo A (3 tests)
+gh workflow run playwright.yml -f testFile=tests/flujoA_steps.spec.ts -f reporter=html
+
+# Ejecutar flujo B (15 tests)
+gh workflow run playwright.yml -f testFile=tests/flujoB_steps.spec.ts -f reporter=html
+
+# Ejecutar allure flujo A
+gh workflow run playwright.yml -f testFile=tests/allure/allure-flujoA.spec.ts -f reporter=allure
+
+# Ejecutar allure flujo B
+gh workflow run playwright.yml -f testFile=tests/allure/allure-flujoB.spec.ts -f reporter=both
+```
+
+#### Por tag:
+
+```bash
+# Tests positivos
+gh workflow run playwright.yml -f tag=@positive -f reporter=html
+
+# Tests negativos
+gh workflow run playwright.yml -f tag=@negative -f reporter=html
+
+# Tests de marca
+gh workflow run playwright.yml -f tag=@brand -f reporter=html
+
+# Tests de transmisión
+gh workflow run playwright.yml -f tag=@transmission -f reporter=html
+
+# Tests de tipo de coche
+gh workflow run playwright.yml -f tag=@type -f reporter=html
+
+# Tests combinados
+gh workflow run playwright.yml -f tag=@combinado -f reporter=both
+```
+
+#### Todos los tests:
+
+```bash
+# Con reporte HTML
+gh workflow run playwright.yml -f testFile="(todos)" -f reporter=html
+
+# Con reporte Allure
+gh workflow run playwright.yml -f reporter=allure
+
+# Con ambos reportes
+gh workflow run playwright.yml -f reporter=both
+```
+
+#### Ver resultados:
+
+```bash
+# Ver estado de ejecución
+gh run list --workflow=playwright.yml
+
+# Ver logs en tiempo real
+gh run watch <run-id>
+```
+
+### 🌐 GitHub Actions (Web)
+
+Ejecuta los tests automáticamente desde GitHub sin necesidad de entorno local.
+
+#### Desde la web:
+1. Ve a **GitHub → Actions → Playwright E2E Tests**
+2. Click en **Run workflow**
+3. Selecciona el tipo de reporte:
+   - `html` → Solo reporte HTML
+   - `allure` → Solo reporte Allure
+   - `both` → Ambos reportes
+4. Click en **Run workflow**
+
+#### Ver resultados:
+- Ve a **Actions** → Ejecución completada
+- Descarga los reportes desde **Artifacts**
+
+#### Configuración actual:
+| Parámetro | Valor |
+|-----------|-------|
+| Paralelismo | ⚡ 4 tests simultáneos |
+| Browser | 🌐 Chromium |
+| Timeout | ⏱️ 60 minutos |
+| Retries | 🔁 2 (si falla) |
+
+#### Cuándo se ejecuta:
+- ⏰ **Manual**: Cuando tú quieras desde GitHub
+- 📅 **Programado**: (descomentar en workflow para ejecutar diario)
+
 ## 📊 Reportes
 
 ### Reporte HTML (Default de Playwright)

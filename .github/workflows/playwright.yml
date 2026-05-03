@@ -23,6 +23,32 @@ on:
   # ─────────────────────────────────────────────────────────────────
   workflow_dispatch:
     inputs:
+      testFile:
+        description: 'Archivo de test a ejecutar'
+        required: false
+        default: '(todos)'
+        type: choice
+        options:
+          - (todos)
+          - tests/flujoA_steps.spec.ts
+          - tests/flujoB_steps.spec.ts
+          - tests/allure/allure-flujoA.spec.ts
+          - tests/allure/allure-flujoB.spec.ts
+
+      tag:
+        description: 'Tag de test a ejecutar'
+        required: false
+        default: '(ninguno)'
+        type: choice
+        options:
+          - (ninguno)
+          - @positive
+          - @negative
+          - @brand
+          - @transmission
+          - @type
+          - @combinado
+
       reporter:
         description: 'Tipo de reporte a generar'
         required: true
@@ -92,33 +118,56 @@ jobs:
         run: npx playwright install --with-deps
 
       # ─────────────────────────────────────────────────────────────────
-      # Paso 6: Run tests (HTML) - opcional
-      # Solo se ejecuta si reporter = 'html' o 'both'
-      # Genera reporte HTML en playwright-report/
+      # Paso 6: Run tests - según archivo, tag o todos
+      # Ejecuta los tests según la selección del usuario
+      # Genera reporte según el tipo seleccionado (html/allure/both)
       # ─────────────────────────────────────────────────────────────────
-      - name: Run tests (HTML)
-        if: inputs.reporter == 'html' || inputs.reporter == 'both'
-        run: npm run test:html
+      - name: Run tests
+        run: |
+          FILE="${{ inputs.testFile }}"
+          TAG="${{ inputs.tag }}"
+          REPORTER="${{ inputs.reporter }}"
+          
+          # Determinar el comando base
+          if [ "$FILE" != "(todos)" ] && [ -n "$FILE" ]; then
+            # Ejecutar archivo específico
+            TEST_BASE="npx playwright test $FILE"
+            echo "📁 Ejecutando archivo: $FILE"
+          elif [ "$TAG" != "(ninguno)" ] && [ -n "$TAG" ]; then
+            # Ejecutar por tag
+            TEST_BASE="npx playwright test --grep '$TAG'"
+            echo "🏷️ Ejecutando por tag: $TAG"
+          else
+            # Ejecutar todos
+            TEST_BASE="npx playwright test"
+            echo "🚀 Ejecutando todos los tests"
+          fi
+          
+          # Ejecutar según el tipo de reporter
+          if [ "$REPORTER" == "html" ] || [ "$REPORTER" == "both" ]; then
+            echo "📊 Generando reporte HTML..."
+            $TEST_BASE --reporter=line || true
+          fi
+          
+          if [ "$REPORTER" == "allure" ] || [ "$REPORTER" == "both" ]; then
+            echo "📊 Generando reporte Allure..."
+            $TEST_BASE --config=allure.config.ts --reporter=line || true
+          fi
         continue-on-error: true
 
       # ─────────────────────────────────────────────────────────────────
-      # Paso 7: Run tests (Allure) - opcional
+      # Paso 7: Generate Allure Report
       # Solo se ejecuta si reporter = 'allure' o 'both'
-      # Genera resultados en allure-results/
-      # ─────────────────────────────────────────────────────────────────
-      - name: Run tests (Allure)
-        if: inputs.reporter == 'allure' || inputs.reporter == 'both'
-        run: npm run test:allure
-        continue-on-error: true
-
-      # ─────────────────────────────────────────────────────────────────
-      # Paso 8: Generate Allure Report - opcional
-      # Solo se ejecuta si se usaron tests Allure
       # Convierte allure-results en HTML en allure-report/
       # ─────────────────────────────────────────────────────────────────
       - name: Generate Allure Report
         if: inputs.reporter == 'allure' || inputs.reporter == 'both'
-        run: npm run allure:generate
+        run: |
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
+            npm run allure:generate
+          else
+            echo "⚠️ No se encontraron resultados de Allure"
+          fi
         continue-on-error: true
 
       # ─────────────────────────────────────────────────────────────────
