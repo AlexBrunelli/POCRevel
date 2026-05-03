@@ -1,10 +1,31 @@
-name: Playwright E2E Tests Manual
+# ═══════════════════════════════════════════════════════════════════
+# Playwright E2E Tests - POC Reporting (HTML vs Allure)
+# ═══════════════════════════════════════════════════════════════════
+#
+# Este workflow permite ejecutar tests E2E con Playwright:
+#
+# ✔ Por fichero
+# ✔ Por tag
+# ✔ Con reporte HTML (Playwright)
+# ✔ Con reporte Allure
+#
+# Reglas de la POC:
+#   html   → ejecuta tests/
+#   allure → ejecuta tests/allure/
+#   both   → ejecuta TODO
+#
+# NOTA:
+# En un entorno real no separaríamos tests por reporter,
+# pero aquí se hace para demostrar capacidades de cada tipo de informe.
+# ═══════════════════════════════════════════════════════════════════
+
+name: Playwright E2E Tests
 
 on:
   workflow_dispatch:
     inputs:
       testFile:
-        description: 'Test file'
+        description: 'Archivo de test a ejecutar'
         required: false
         default: '(todos)'
         type: choice
@@ -12,11 +33,27 @@ on:
           - (todos)
           - tests/flujoA_steps.spec.ts
           - tests/flujoB_steps.spec.ts
+          - tests/allure/allure-flujoA.spec.ts
+          - tests/allure/allure-flujoB.spec.ts
+
+      tag:
+        description: 'Tag de test a ejecutar'
+        required: false
+        default: '(ninguno)'
+        type: choice
+        options:
+          - (ninguno)
+          - @positive
+          - @negative
+          - @brand
+          - @transmission
+          - @type
+          - @combinado
 
       reporter:
-        description: 'Reporter type'
+        description: 'Tipo de reporte'
         required: true
-        default: 'html'
+        default: 'both'
         type: choice
         options:
           - html
@@ -26,16 +63,130 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+
     steps:
-      - name: Checkout
+      # ─────────────────────────────────────────────────────────────
+      # 1. Checkout código
+      # ─────────────────────────────────────────────────────────────
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Node
+
+      # ─────────────────────────────────────────────────────────────
+      # 2. Setup Node.js + cache npm
+      # ─────────────────────────────────────────────────────────────
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install deps
+          cache: 'npm'
+
+      # ─────────────────────────────────────────────────────────────
+      # 3. Instalar dependencias
+      # ─────────────────────────────────────────────────────────────
+      - name: Install dependencies
         run: npm ci
-      - name: Install browsers
+
+      # ─────────────────────────────────────────────────────────────
+      # 4. Instalar Java (necesario para Allure)
+      # ─────────────────────────────────────────────────────────────
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # ─────────────────────────────────────────────────────────────
+      # 5. Instalar navegadores Playwright
+      # ─────────────────────────────────────────────────────────────
+      - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      # ─────────────────────────────────────────────────────────────
+      # 6. Ejecutar tests
+      # ─────────────────────────────────────────────────────────────
       - name: Run tests
-        run: npx playwright test ${{ inputs.testFile }} --reporter=line || true
+        run: |
+          FILE="${{ inputs.testFile }}"
+          TAG="${{ inputs.tag }}"
+          REPORTER="${{ inputs.reporter }}"
+
+          # Limpiar resultados anteriores
+          rm -rf allure-results allure-report playwright-report
+
+          # ─────────────────────────────────────────────────────────
+          # Selección de tests según tipo de reporte (POC)
+          # ─────────────────────────────────────────────────────────
+          if [ "$REPORTER" == "html" ]; then
+            BASE_PATH="tests"
+            echo "📊 HTML → tests/"
+          elif [ "$REPORTER" == "allure" ]; then
+            BASE_PATH="tests/allure"
+            echo "📊 ALLURE → tests/allure/"
+          else
+            BASE_PATH="tests"
+            echo "📊 BOTH → todos los tests"
+          fi
+
+          CMD="npx playwright test $BASE_PATH"
+
+          # ─────────────────────────────────────────────────────────
+          # Filtro por fichero
+          # ─────────────────────────────────────────────────────────
+          if [ "$FILE" != "(todos)" ]; then
+            CMD="$CMD $FILE"
+            echo "📁 Archivo: $FILE"
+          fi
+
+          # ─────────────────────────────────────────────────────────
+          # Filtro por tag
+          # ─────────────────────────────────────────────────────────
+          if [ "$TAG" != "(ninguno)" ]; then
+            CMD="$CMD --grep \"$TAG\""
+            echo "🏷️ Tag: $TAG"
+          fi
+
+          # ─────────────────────────────────────────────────────────
+          # Reporter
+          # Siempre usamos HTML + line
+          # Allure se genera posteriormente
+          # ─────────────────────────────────────────────────────────
+          CMD="$CMD --reporter=line,html --retries=2 --trace=on-first-retry"
+
+          echo "🚀 Ejecutando: $CMD"
+          eval $CMD
+
+      # ─────────────────────────────────────────────────────────────
+      # 7. Generar reporte Allure
+      # ─────────────────────────────────────────────────────────────
+      - name: Generate Allure Report
+        if: inputs.reporter == 'allure' || inputs.reporter == 'both'
+        run: |
+          # Genera el HTML de Allure a partir de allure-results
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
+            npm run allure:generate
+          else
+            echo "⚠️ No hay resultados de Allure"
+          fi
+
+      # ─────────────────────────────────────────────────────────────
+      # 8. Subir reporte HTML de Playwright
+      # ─────────────────────────────────────────────────────────────
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      # ─────────────────────────────────────────────────────────────
+      # 9. Subir reporte Allure
+      # ─────────────────────────────────────────────────────────────
+      - name: Upload Allure Report
+        if: inputs.reporter == 'allure' || inputs.reporter == 'both'
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
