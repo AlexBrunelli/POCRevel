@@ -26,12 +26,11 @@ on:
         type: choice
         options:
           - (ninguno)
-          - @positive
-          - @negative
-          - @brand
-          - @transmission
-          - @type
-          - @combinado
+          - '@negativo'
+          - '@cambio'
+          - '@marca'
+          - '@tipo'
+          - '@combinado'
 
       reporter:
         description: 'Tipo de reporte'
