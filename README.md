@@ -2,7 +2,7 @@
 
 **Proyecto de automatización de pruebas end-to-end para la aplicación web de Revel.**
 
-## Tecnologías Utilizadas
+## 🛠️ Tecnologías Utilizadas
 
 | Categoría | Tecnología | Descripción |
 |-----------|------------|-------------|
@@ -14,7 +14,7 @@
 
 > Este proyecto ha sido desarrollado con asistencia de IA utilizando OpenCode.
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 playwright.config/
@@ -37,7 +37,7 @@ playwright.config/
 └── PLAYWRIGHT_GUIDELINES.md
 ```
 
-## Archivos de Tests
+## 📝 Archivos de Tests
 
 ### Versión con Steps (Recomendada)
 
@@ -48,7 +48,7 @@ playwright.config/
 
 **Características:**
 - ✅ test.steps con estructura Given/When/Then
-- ✅ Annotations con Descripción y Criterio
+- ✅ Annotations con Description and Criteria
 - ✅ Logs amigables en consola
 - ✅ Captura de screenshot automática al final
 - ✅ Tags para filtrado de tests
@@ -62,7 +62,7 @@ playwright.config/
 
 Incluye annotations Allure: description, severity, feature, story.
 
-## Prerrequisitos
+## ⚡ Prerrequisitos
 
 - Node.js 18+
 - npm
@@ -76,34 +76,34 @@ npm install
 
 | Paquete | Versión | Descripción |
 |---------|---------|-------------|
-| `@playwright/test` | ^1.59.1 | Test runner principal |
-| `@faker-js/faker` | ^10.4.0 | Generación de datos de test |
-| `@types/node` | ^25.6.0 | Tipos TypeScript |
-| `allure-playwright` | ^3.7.1 | Reporter Allure |
-| `playwright` | (peer) | Navegadores para automatización |
+| `@playwright/test` | ^1.59.1 | 🧪 Test runner principal |
+| `@faker-js/faker` | ^10.4.0 | 🎲 Generación de datos de test |
+| `@types/node` | ^25.6.0 | 📦 Tipos TypeScript |
+| `allure-playwright` | ^3.7.1 | 📊 Reporter Allure |
+| `playwright` | (peer) | 🌐 Navegadores para automatización |
 
-## Ejecutar Tests
+## ▶️ Ejecutar Tests
 
 ### Tests estándar (HTML)
 
 ```bash
-# Tests flujo A
+# ▶️ Tests flujo A
 npx playwright test tests/flujoA_steps.spec.ts
 
-# Tests flujo B
+# ▶️ Tests flujo B
 npx playwright test tests/flujoB_steps.spec.ts
 
-# Todos los tests
+# 🏃 Todos los tests
 npx playwright test
 ```
 
 ### Por tag
 
 ```bash
-npx playwright test --grep "@negativo"
-npx playwright test --grep "@cambio"
-npx playwright test --grep "@marca"
-npx playwright test --grep "@tipo"
+npx playwright test --grep "@negative"
+npx playwright test --grep "@transmission"
+npx playwright test --grep "@brand"
+npx playwright test --grep "@type"
 ```
 
 ### Con reporter específico
@@ -113,7 +113,7 @@ npx playwright test --reporter=list
 npx playwright test --reporter=html
 ```
 
-## Reportes
+## 📊 Reportes
 
 ### Reporte HTML (Default de Playwright)
 
@@ -142,39 +142,39 @@ npx allure open allure-report
 
 | Campo | Descripción | Ejemplo |
 |-------|-------------|---------|
-| `description` | Descripción corta del test | "Usuario completa flujo completo" |
+| `description` | Descripción corta del test | "User completes full flow" |
 | `severity` | Nivel de criticidad | `blocker`, `critical`, `normal`, `minor`, `trivial` |
-| `feature` | Feature epic | "Flujo A", "Flujo B" |
-| `story` | User story | "Contratación", "Filtros de búsqueda" |
+| `feature` | Feature epic | "Flow A", "Flow B" |
+| `story` | User story | "Contracting", "Search Filters" |
 
 **Severity por tipo de test:**
 | Tipo de Test | Severity |
 |--------------|----------|
-| Positivos (happy path) | `critical` |
-| Negativos (validación) | `normal` |
+| Positive (happy path) | `critical` |
+| Negative (validation) | `normal` |
 
 ### Comparación de Reportes
 
 | Aspecto | HTML | Allure |
 |---------|------|--------|
-| Interfaz | Explorador web | Explorador web |
-| Adjuntos | Screenshots, videos, trace | Screenshots, videos, logs |
-| Estructura | Lista de tests | Features/Stories/epics |
-| Tags | Soportado | Soportado |
+| Interfaz | 🌐 Explorador web | 🌐 Explorador web |
+| Adjuntos | 📸 Screenshots, videos, trace | 📋 Screenshots, videos, logs |
+| Estructura | 📋 Lista de tests | 🏗️ Features/Stories/epics |
+| Tags | 🏷️ Soportado | 🏷️ Soportado |
 
-## Tags disponibles
+## 🏷️ Tags disponibles
 
 ### Tags de Categoría
-- `@negativo` - Tests que verifican comportamiento de error
-- `@positivo` - Tests que verifican flujo correcto
+- `@negative` - ❌ Tests que verifican comportamiento de error
+- `@positive` - ✅ Tests que verifican flujo correcto
 
 ### Tags de Filtros (flujoB)
-- `@marca` - Tests de filtro por marca
-- `@cambio` - Tests de filtro por tipo de cambio
-- `@tipo` - Tests de filtro por tipo de coche
-- `@combinado` - Tests de filtros combinados
+- `@brand` - 🔍 Tests de filtro por marca
+- `@transmission` - ⚙️ Tests de filtro por tipo de cambio
+- `@type` - 🚗 Tests de filtro por tipo de coche
+- `@combinado` - 🔗 Tests de filtros combinados
 
-## Generación de Datos de Test
+## 🎲 Generación de Datos de Test
 
 Los datos se generan dinámicamente usando Faker en `utils/dataGenerator.ts`.
 
@@ -240,3 +240,88 @@ A continuación se detallan las prioridades para las siguientes fases de automat
 
 - **Pruebas Negativas**: Automatizar la validación de campos para asegurar que el sistema no permite la introducción de datos inesperados o erróneos.
 - **Automatización Mobile**: Realizar la exportación de los casos de prueba para su ejecución en dispositivos móviles vía Appium.
+
+### 5. ERP 🏢
+
+- **Reglas de negocio** (contabilidad, facturación, stock...)
+- **Flujos transaccionales** (pedido → factura → asiento contable)
+- **Integraciones** (bancos, Hacienda, proveedores)
+- **Consistencia de datos** (lo más crítico)
+- **Arquitectura**: Backend ≈ 70% (lógica, cálculos, reglas) | Integración ≈ 20% (módulos + mocks externos) | UI ≈ 10% con Playwright (solo flujos críticos)
+
+## 💰 Validación Financiera en Entornos de Test
+
+---
+
+### 🧪 (1) Entorno Desarrollo / Staging
+
+En estos entornos, la idea es no depender de servicios externos reales.
+
+#### Estrategia:
+- Usar mocks para simular la respuesta del proveedor  
+- Automatizar con Playwright tanto UI como validación de red  
+
+#### Cómo se trabaja:
+Se interceptan las llamadas al servicio de validación financiera y se simulan distintos escenarios.
+
+Por ejemplo:
+- Se envían datos de un usuario (nombre, DNI, ingresos…)  
+- El sistema recibe una respuesta simulada:  
+  - “aprobado” → continúa el flujo  
+  - “rechazado” → se bloquea  
+  - “en revisión” → queda pendiente  
+  - “error” → se informa al usuario  
+
+#### Qué se valida:
+- Que los datos enviados son correctos  
+- Que el sistema interpreta bien la respuesta  
+- Que el flujo se comporta como se espera  
+
+👉 Objetivo: poder probar todo de forma estable y sin depender de terceros.
+
+---
+
+### 🟡 (2) Entorno Producción (y Preproducción)
+
+Aquí ya se trabaja con proveedores reales, así que el enfoque es más controlado.
+
+#### Estrategia:
+- En preproducción, usar entornos de prueba del proveedor  
+- En producción, hacer solo validaciones básicas  
+
+#### Cómo se trabaja:
+- Se envían datos reales o controlados  
+- El proveedor devuelve una respuesta real  
+
+Ejemplo:
+- “aprobado” → se puede contratar  
+- “rechazado” → no se permite continuar  
+
+#### Qué se valida:
+- Que la integración funciona correctamente  
+- Que el sistema responde bien  
+- Que no hay errores inesperados  
+- Que la respuesta llega en un tiempo razonable (sin esperas largas)
+
+#### En producción:
+- Solo pruebas básicas (happy path) con Playwright  
+- Más apoyo en monitorización que en tests automáticos  
+
+---
+
+### ⚠️ Consideraciones Clave
+
+- Playwright permite cubrir UI, mocks y validación de requests/responses  
+- Evitar depender de servicios externos en automatización  
+- Mantener los tests independientes y repetibles  
+- Tener cuidado con datos sensibles  
+
+---
+
+### 📌 Resumen
+
+| Entorno        | Enfoque             | Objetivo                  |
+|---------------|---------------------|---------------------------|
+| Staging       | Mocks / simulación  | Validar lógica y flujos   |
+| Preproducción | Entorno real (test) | Validar integración       |
+| Producción    | Tests mínimos       | Asegurar estabilidad      |
